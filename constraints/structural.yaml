@@ -1,0 +1,156 @@
+# constraints/structural.yaml
+
+structural_constraints:
+
+  S1_closed_list_compliance:
+    id: S1
+    name: "Closed-List Compliance"
+    type: kill
+    applies_to: [L2]
+    owner: structural_validator
+    requires_calculation: false
+    description: "All primitive codes must be from valid SEDF set. Mutually exclusive codes cannot be combined. Complementary combinations permitted with justification."
+    rationale: "Enforces SEDF methodology and prevents invention of invalid primitives or contradictory combinations"
+    reference_file: "sedf_codes.yaml"
+
+  S2_provenance_completeness_and_accuracy:
+    id: S2
+    name: "Provenance Completeness and Accuracy"
+    type: kill
+    applies_to: [L0, L1, L2, L3, L4, L5]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Every element must carry a provenance tag. Tags must be accurate and verifiable against source specifications."
+    rationale: "Ensures grounded synthesis by preventing hallucinated claims about source system properties"
+    valid_tags: ["[FROM-A]", "[FROM-B]", "[ADAPT-A]", "[ADAPT-B]", "[SYNTH]"]
+    verification_required: true
+
+  S3_domain_coverage:
+    id: S3
+    name: "Domain Coverage"
+    type: kill
+    applies_to: [L2]
+    owner: structural_validator
+    requires_calculation: false
+    description: "All six functional domains (A, B, C, D, E, F) must be addressed"
+    rationale: "Ensures completeness of functional specification"
+    required_domains: ["A", "B", "C", "D", "E", "F"]
+
+  S4_vertical_traceability_down:
+    id: S4
+    name: "Vertical Traceability (Down)"
+    type: kill
+    applies_to: [L1, L2, L3, L4, L5]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Every element at level N must trace to a parent element at level N-1"
+    rationale: "Prevents orphan elements that appear from nowhere in the hierarchy"
+
+  S5_vertical_traceability_up:
+    id: S5
+    name: "Vertical Traceability (Up)"
+    type: kill
+    applies_to: [L1, L2, L3, L4, L5]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Every element at level N-1 must be realized by at least one child element at level N"
+    rationale: "Prevents dangling requirements that are specified but never implemented"
+
+  S6_primitive_coverage:
+    id: S6
+    name: "Primitive Coverage"
+    type: kill
+    applies_to: [L3]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Every L2 primitive must map to at least one L3 mechanism"
+    rationale: "Ensures that all functional primitives are implemented by specific mechanisms"
+
+  S7_mechanism_coverage:
+    id: S7
+    name: "Mechanism Coverage"
+    type: kill
+    applies_to: [L4]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Every L3 mechanism must decompose into L4 components"
+    rationale: "Ensures that all mechanisms are broken down into implementable components"
+
+  S8_parameter_completeness:
+    id: S8
+    name: "Parameter Completeness"
+    type: flag
+    applies_to: [L5]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Key parameters should be specified. Missing parameters are flagged"
+    rationale: "Encourages complete specifications while not blocking progress on minor omissions"
+
+  S9_synth_justification_required:
+    id: S9
+    name: "SYNTH Justification Required"
+    type: kill
+    applies_to: [L0, L1, L2, L3, L4, L5]
+    owner: structural_validator
+    requires_calculation: false
+    description: "All [SYNTH] elements must include explicit Necessity Justification explaining why source elements cannot serve the function. Prevents unjustified novel synthesis that bypasses source grounding."
+    rationale: "Enforces strict parsimony by requiring agents to justify why source adaptation inadequate before inventing new elements"
+    validation_procedure: "For each [SYNTH] element: verify justification exists, check quality (must explain inadequacy of both Spec A and Spec B elements), flag if source element could have been adapted"
+    quality_standards:
+      - "Must explain specific functional requirements not met by source elements"
+      - "Cannot use vague justifications ('for better performance', 'to optimize design')"
+      - "Must demonstrate why [ADAPT-A] or [ADAPT-B] modifications insufficient"
+    flag_triggers:
+      - "Source element available but agent used [SYNTH] instead"
+      - "Justification too generic or non-specific"
+      - "High [SYNTH] usage ratio (>30% of elements) suggesting poor source utilization"
+
+thematic_constraints:
+
+  T1_parsimony_compliance:
+    id: T1
+    name: "Parsimony Compliance"
+    type: flag
+    applies_to: [L0, L1, L2, L3, L4, L5]
+    owner: structural_validator
+    requires_calculation: false
+    description: "Overall design should prefer source elements over novel synthesis. High [SYNTH] ratios flagged for human review."
+    rationale: "Enforces preference hierarchy: source elements preferred over novel invention"
+    preference_order: ["[FROM-A]", "[FROM-B]", "[ADAPT-A]", "[ADAPT-B]", "[SYNTH]"]
+    thresholds:
+      synth_warning_ratio: 0.3
+      synth_flag_ratio: 0.5
+    analysis_requirements:
+      - "Count provenance distribution across all elements"
+      - "Flag designs with >30% [SYNTH] elements for review"
+      - "Check for patterns of unnecessary novel synthesis"
+
+constraint_activation:
+  L0: [S2, S9, T1]
+  L1: [S2, S4, S5, S9, T1]
+  L2: [S1, S2, S3, S4, S5, S9, T1]
+  L3: [S2, S4, S5, S6, S9, T1]
+  L4: [S2, S4, S5, S7, S9, T1]
+  L5: [S2, S4, S5, S8, S9, T1]
+
+anti_gaming_provisions:
+  description: "Constraints designed to prevent agents from bypassing source grounding requirements"
+  patterns_to_detect:
+    - "Excessive [SYNTH] usage to avoid source adaptation work"
+    - "Vague or generic justifications that don't demonstrate necessity"
+    - "Innovation inflation where simpler source-based solutions available"
+    - "Claiming source inadequacy without specific functional explanation"
+  enforcement_strategy:
+    - "S9 provides kill constraint for missing/inadequate justifications"
+    - "T1 provides flag constraint for statistical patterns of poor source utilization"
+    - "Structural validator prompted to be especially strict on [SYNTH] validation"
+
+metadata:
+  version: "1.1"
+  total_constraints: 10
+  structural_constraints: 9
+  thematic_constraints: 1
+  kill_constraints: 9
+  flag_constraints: 1
+  last_updated: "Based on Gemini feedback regarding SYNTH validation enforcement"
+  description: "Structural constraints enforce SEDF compliance, traceability, and strict source grounding to prevent unjustified novel synthesis"

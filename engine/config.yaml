@@ -1,0 +1,167 @@
+# Level 3 Synthesis Engine Configuration - V2
+# Branch-and-Save Architecture with Meta-Learning
+# Fresh Restart after N failures with Negative Constraint Injection
+
+engine_parameters:
+  max_attempts: 3                     # Attempts per level before backtracking
+  max_backtrack_depth: 2              # How many levels back per backtrack
+  max_total_backtracks: 6             # Backtracks within single architecture
+  
+  # V2: Branch-and-Save Parameters
+  fresh_restart_after_n_l5_failures: 3    # Fresh restart after N failed L5 attempt cycles
+  max_fresh_restarts: 15                   # Maximum distinct architectures to explore
+  inject_negative_constraints: true        # Enable meta-learning between architectures
+  save_all_architectures: true             # Save L0-L4 even if L5 fails
+
+logging:
+  level: "INFO"
+  output_dir: "outputs/"
+  log_file: "synthesis_run.log"
+  detailed_logging: true
+
+api_settings:
+  synthesis_temperature: 0.4
+  validator_temperature: 0.1
+  max_tokens: 8000
+  max_total_tokens_per_run: 5000000   # 5M tokens
+  timeout: 120
+  token_tracking: true
+  budget_warning_threshold: 4000000   # Warn at 80%
+  budget_enforcement: true
+
+models:
+  synthesis_agent: "claude-sonnet-4-20250514"
+  physics_validator: "claude-sonnet-4-20250514"
+  structural_validator: "claude-sonnet-4-20250514"
+
+experiment_settings:
+  run_id_prefix: "L3_v2"
+  track_metrics: true
+  save_provenance_distribution: true
+  save_attempt_history: true
+  save_backtrack_history: true
+  save_token_usage: true
+  
+  # V2: Architecture tracking
+  save_architecture_summaries: true
+  save_architecture_fingerprints: true
+  save_constraint_signatures: true
+
+  variations:
+    - name: "branch_and_save"
+      count: 1
+      synthesis_model: "claude-sonnet-4-20250514"
+      synthesis_temperature: 0.4
+      description: "Branch-and-Save with meta-learning exploration"
+
+file_paths:
+  constraints_dir: "../constraints/"      # Relative to v2 folder
+  prompts_dir: "../prompts/"
+  source_specs_dir: "../source_specs/"
+  outputs_dir: "outputs/"
+
+constraint_files:
+  physics: "../constraints/physics.yaml"
+  structural: "../constraints/structural.yaml"
+  sedf_codes: "../constraints/sedf_codes.yaml"
+  mechanism_prerequisites: "../constraints/mechanism_prerequisites.yaml"
+
+prompt_files:
+  synthesis_agent: "../prompts/synthesis_agent.md"
+  physics_validator: "../prompts/physics_validator.md"
+  structural_validator: "../prompts/structural_validator.md"
+
+source_specification_files:
+  spec_a: "../source_specs/spec_a.yaml"
+  spec_b: "../source_specs/spec_b.yaml"
+
+output_settings:
+  timestamp_format: "%Y%m%d_%H%M%S"
+  save_intermediate_results: true
+  save_token_metrics: true
+  compress_logs: false
+
+validation:
+  enable_physics_validation: true
+  enable_structural_validation: true
+  strict_mode: true
+  synth_validation_enhanced: true
+
+budget_management:
+  enabled: true
+  per_call_limit: 100000              # 100K per call
+  per_run_limit: 5000000              # 5M total
+  warning_threshold: 4000000          # 80% warning
+  emergency_stop: true
+  cost_estimation:
+    input_token_cost: 0.000003
+    output_token_cost: 0.000015
+    estimated_run_cost: 25.00         # ~$25 for full 5M run
+  tracking:
+    log_per_call: true
+    log_cumulative: true
+    save_to_results: true
+
+constraint_enforcement:
+  synth_validation:
+    enabled: true
+    fail_on_missing_justification: true
+    flag_excessive_usage: true
+    usage_threshold: 0.3
+  provenance_verification:
+    enabled: true
+    strict_mode: true
+    verify_all_claims: true
+
+sedf_levels:
+  - "L0"
+  - "L1"
+  - "L2"
+  - "L3"
+  - "L4"
+  - "L5"
+
+verdict_types:
+  - "PASS"
+  - "PASS_WITH_FLAGS"
+  - "FAIL"
+
+constraint_types:
+  - "kill"
+  - "flag"
+
+provenance_tags:
+  - "[FROM-A]"
+  - "[FROM-B]"
+  - "[ADAPT-A]"
+  - "[ADAPT-B]"
+  - "[SYNTH]"
+
+part_classification_tags:
+  - "[OFF-SHELF]"
+  - "[CUSTOM]"
+
+performance_expectations:
+  typical_tokens_per_architecture: 500000
+  typical_architectures_explored: 10
+  typical_total_tokens: 5000000
+  success_probability: 0.7
+  partial_success_probability: 1.0    # Will always get L0-L4 architectures
+
+failure_analysis:
+  track_constraint_violations: true
+  track_backtrack_triggers: true
+  track_attempt_patterns: true
+  save_failure_reports: true
+
+metadata:
+  version: "2.0"
+  description: "Branch-and-Save architecture with meta-learning and negative constraint injection"
+  created_date: "2025-01-23"
+  architecture: "branch_and_save"
+  key_features:
+    - "Fresh restart after N L5 failures"
+    - "Negative constraint injection for architectural diversity"
+    - "Save all L0-L4 architectures for research analysis"
+    - "Architecture fingerprinting via L2 domain primitives"
+    - "Constraint violation signature tracking"

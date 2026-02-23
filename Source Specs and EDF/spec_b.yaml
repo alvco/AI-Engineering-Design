@@ -1,0 +1,306 @@
+# Source Specification B: Hydraulic Rock Breaker (Montabert SC-36)
+# SEDF-structured specification for Level 3 synthesis engine
+
+metadata:
+  system_name: "Hydraulic Rock Breaker"
+  model: "Montabert SC-36"
+  classification: "Industrial tool"
+  function: "Rock fracturing via percussion"
+  description: "Hydraulic-powered impact hammer for construction and mining applications"
+
+L0_governing_concept:
+  description: "Continuous hydraulic cycling to generate high-frequency percussion impacts for rock fracturing"
+  primary_function: "Rock breaking via repeated impact energy transfer"
+  energy_source: "Hydraulic fluid under pressure from external pump"
+  operating_principle: "Self-oscillating hydraulic circuit with accumulator assist"
+  environment: "Ambient air with sealed hydraulic system"
+
+L1_functional_architecture:
+  energy_flow_sequence:
+    - step: "Hydraulic charging"
+      description: "Pressurized fluid fills accumulator and chambers"
+      energy_form: "Hydraulic pressure potential"
+    - step: "Valve switching"
+      description: "Pilot valve redirects flow to drive chamber"
+      energy_form: "Flow control signal"
+    - step: "Piston acceleration"
+      description: "Hydraulic pressure accelerates piston downward"
+      energy_form: "Hydraulic to kinetic"
+    - step: "Impact delivery"
+      description: "Piston strikes tool transferring momentum"
+      energy_form: "Kinetic to impact"
+    - step: "Return stroke"
+      description: "Return chamber pressure pulls piston back"
+      energy_form: "Hydraulic pressure recovery"
+    - step: "Cycle reset"
+      description: "Valve switches to restart sequence"
+      energy_form: "System state reset"
+  rate_limiter: "Valve switching frequency and hydraulic refill time"
+  cycle_frequency: "25 Hz typical operation"
+
+L2_domain_primitives:
+  A_energy_source:
+    code: "A2 + A3"
+    description: "Hydraulic primary (A2) with pneumatic accumulator assist (A3)"
+    justification: "Hydraulic pump provides continuous power, accumulator smooths flow pulses"
+  B_energy_release:
+    code: "B1"
+    description: "Continuous cycle"
+    justification: "Self-oscillating valve system maintains continuous 25 Hz operation"
+  C_kinematic_constraint:
+    code: "C1"
+    description: "Linear guide"
+    justification: "Piston constrained to single-axis translation by cylinder bore"
+  D_force_delivery:
+    code: "D1"
+    description: "Percussion"
+    justification: "Energy delivered via direct solid-to-solid impact"
+  E_sealing_containment:
+    code: "E2"
+    description: "Dynamic seal"
+    justification: "Sealed hydraulic circuit with dynamic seals on moving piston"
+  F_control_interface:
+    code: "F1"
+    description: "Mechanical pilot"
+    justification: "Pressure-driven pilot valve controls main flow switching"
+
+L3_mechanisms:
+  self_oscillating_valve:
+    implements: "B1"
+    description: "Hydraulic pilot valve with automatic switching based on piston position"
+    function: "Control flow direction to maintain continuous cycling"
+    switching_principle: "Pressure differential triggers valve position change"
+    switching_frequency: "25 Hz"
+    response_time: "2-5 ms"
+  
+  pneumatic_accumulator:
+    implements: "A3"
+    description: "Gas-charged hydraulic accumulator for energy storage and flow smoothing"
+    function: "Store hydraulic energy and provide peak flow during impact"
+    gas_type: "Nitrogen pre-charge"
+    volume: "1.5 L"
+    pressure_range: "50-210 bar"
+  
+  linear_hydraulic_cylinder:
+    implements: "C1"
+    description: "Double-acting hydraulic cylinder with precision bore"
+    function: "Convert hydraulic pressure to linear piston motion"
+    bore_diameter: "80 mm"
+    stroke_length: "85 mm"
+    operating_pressure: "210 bar max"
+  
+  impact_mechanism:
+    implements: "D1"
+    description: "Hardened steel piston impacts tool shank for energy transfer"
+    function: "Convert kinetic energy to impact loading of target"
+    piston_mass: "20 kg"
+    impact_velocity: "4-6 m/s typical"
+    tool_interface: "Hexagonal shank socket"
+
+L4_components:
+  hydraulic_cylinder:
+    part_type: "Primary structure"
+    material: "Ductile iron casting"
+    function: "Contain hydraulic pressure and guide piston motion"
+    components: ["cylinder body", "end caps", "mounting brackets"]
+    pressure_rating: "250 bar"
+  
+  impact_piston:
+    part_type: "Moving element"
+    material: "Tool steel, hardened"
+    mass: 20
+    unit: "kg"
+    function: "Transfer impact energy to tool"
+    features: ["impact face", "seal grooves", "pilot surfaces"]
+  
+  pilot_valve_assembly:
+    part_type: "Control mechanism"
+    material: "Stainless steel"
+    function: "Direct hydraulic flow for oscillation control"
+    components: ["valve body", "spool", "springs", "passages"]
+    flow_capacity: "200 L/min at 210 bar"
+  
+  accumulator:
+    part_type: "Energy storage"
+    material: "Carbon steel vessel"
+    volume: 1.5
+    unit: "L"
+    function: "Store hydraulic energy and smooth flow pulses"
+    gas_charge: "70 bar nitrogen"
+  
+  dynamic_seals:
+    part_type: "Sealing system"
+    material: "Nitrile rubber (NBR)"
+    function: "Contain hydraulic fluid while allowing piston motion"
+    components: ["piston seals", "rod seals", "wiper seals"]
+    temperature_range: "-20 to +80°C"
+  
+  tool_interface:
+    part_type: "Force transmission"
+    material: "Heat-treated alloy steel"
+    function: "Transfer impact energy to work tool"
+    socket_size: "22mm hexagonal"
+    retention_mechanism: "Spring-loaded lock pin"
+
+L5_parameters:
+  geometric_parameters:
+    cylinder_bore: {value: 80, unit: "mm", source: "Manufacturer specification"}
+    stroke_length: {value: 85, unit: "mm", source: "Manufacturer specification"}
+    piston_diameter: {value: 78, unit: "mm", source: "Bore minus seal clearance"}
+    accumulator_volume: {value: 1.5, unit: "L", source: "Manufacturer specification"}
+    overall_length: {value: 850, unit: "mm", source: "Manufacturer specification"}
+    weight: {value: 120, unit: "kg", source: "Manufacturer specification"}
+  
+  force_parameters:
+    hydraulic_force_max: {value: 10500, unit: "N", source: "210 bar × π × (40mm)²"}
+    impact_force_peak: {value: 15000, unit: "N", source: "Estimated from momentum transfer"}
+    static_breakout_force: {value: 8000, unit: "N", source: "150 bar operating pressure"}
+    tool_holding_force: {value: 2000, unit: "N", source: "Retention mechanism"}
+  
+  kinematic_parameters:
+    piston_velocity_typical: {value: 5, unit: "m/s", source: "Stroke/time at 25 Hz"}
+    piston_velocity_max: {value: 8, unit: "m/s", source: "High pressure operation"}
+    acceleration_typical: {value: 2500, unit: "m/s²", source: "Force/mass"}
+    cycle_frequency_nominal: {value: 25, unit: "Hz", source: "Manufacturer specification"}
+    cycle_frequency_range: {value: "15-35", unit: "Hz", source: "Variable conditions"}
+  
+  energy_parameters:
+    impact_energy_nominal: {value: 750, unit: "J", source: "0.5 × 20kg × (5.5m/s)²"}
+    impact_energy_max: {value: 1280, unit: "J", source: "0.5 × 20kg × (8m/s)²"}
+    power_input_hydraulic: {value: 21, unit: "kW", source: "210 bar × 100 L/min"}
+    power_output_impact: {value: 18.75, unit: "kW", source: "750J × 25Hz"}
+    efficiency_overall: {value: 75, unit: "percent", source: "Hydraulic to impact"}
+  
+  hydraulic_parameters:
+    operating_pressure_nominal: {value: 150, unit: "bar", source: "Typical operation"}
+    operating_pressure_max: {value: 210, unit: "bar", source: "System relief setting"}
+    flow_requirement: {value: 100, unit: "L/min", source: "Displacement × frequency"}
+    accumulator_precharge: {value: 70, unit: "bar", source: "50% of min operating pressure"}
+    fluid_type: "ISO VG 46 hydraulic oil"
+    fluid_temperature_range: {value: "-20 to +80", unit: "°C", source: "Seal compatibility"}
+  
+  temporal_parameters:
+    impact_duration: {value: 2, unit: "ms", source: "Contact time during impact"}
+    return_stroke_time: {value: 20, unit: "ms", source: "Half cycle at 25 Hz"}
+    valve_switching_time: {value: 3, unit: "ms", source: "Pilot valve response"}
+    cycle_time_total: {value: 40, unit: "ms", source: "1 / 25Hz"}
+    duty_cycle: {value: 100, unit: "percent", source: "Continuous operation capability"}
+  
+  material_parameters:
+    piston_material: "AISI 4140 steel, 45-50 HRC"
+    cylinder_material: "Ductile iron, 250 MPa tensile"
+    seal_material: "NBR 90 Shore A"
+    accumulator_material: "Carbon steel, 350 MPa yield"
+    hydraulic_fluid_bulk_modulus: {value: 1700, unit: "MPa", source: "Typical mineral oil"}
+    steel_density: {value: 7850, unit: "kg/m³", source: "Standard steel"}
+
+domain_implementations:
+  A2_hydraulic:
+    mechanism: "Pressurized fluid system"
+    power_transmission: "Pascal's principle pressure multiplication"
+    characteristics: "High power density, precise control, stiff response"
+  
+  A3_elastic_pneumatic:
+    mechanism: "Gas compression in accumulator"
+    energy_storage: "Compressed gas potential energy"
+    characteristics: "Energy buffering, flow smoothing, peak power assist"
+  
+  B1_continuous_cycle:
+    mechanism: "Self-oscillating pilot valve"
+    timing_control: "Pressure-position feedback"
+    characteristics: "Automatic cycling, consistent frequency, no external timing"
+  
+  C1_linear:
+    mechanism: "Hydraulic cylinder with bore constraint"
+    guidance_principle: "Precise cylindrical fit with dynamic seals"
+    characteristics: "Single DOF, low friction, high stiffness"
+  
+  D1_percussion:
+    mechanism: "Kinetic energy transfer via direct impact"
+    energy_transfer: "Momentum conservation in collision"
+    characteristics: "High instantaneous power, shock loading"
+  
+  E2_dynamic_seal:
+    mechanism: "Elastomeric seals on moving surfaces"
+    sealing_principle: "Interference fit with pressure activation"
+    characteristics: "Maintains pressure while allowing motion"
+  
+  F1_mechanical_pilot:
+    mechanism: "Pressure-actuated valve control"
+    feedback_type: "Position and pressure sensing"
+    characteristics: "Self-regulating, no external control required"
+
+functional_relationships:
+  energy_cascade:
+    - "Hydraulic (A2) charges Accumulator (A3)"
+    - "Pilot valve (F1) controls Continuous cycling (B1)"
+    - "Hydraulic pressure creates Linear motion (C1)"
+    - "Linear motion generates Percussion (D1)"
+  
+  timing_dependencies:
+    - "Valve switching time limits maximum cycle frequency"
+    - "Hydraulic refill time determines power sustainability"
+    - "Impact duration affects energy transfer efficiency"
+  
+  pressure_relationships:
+    - "Operating pressure determines available force"
+    - "Accumulator precharge affects flow characteristics"
+    - "Seal friction increases with pressure"
+
+performance_envelope:
+  maximum_performance:
+    impact_energy: "1280 J"
+    cycle_frequency: "35 Hz"
+    power_output: "44.8 kW"
+    operating_pressure: "210 bar"
+  
+  nominal_operation:
+    impact_energy: "750 J"
+    cycle_frequency: "25 Hz"
+    power_output: "18.75 kW"
+    operating_pressure: "150 bar"
+  
+  minimum_operation:
+    impact_energy: "400 J"
+    cycle_frequency: "15 Hz"
+    power_output: "6 kW"
+    operating_pressure: "100 bar"
+  
+  environmental_limits:
+    temperature_range: "-20 to +50°C (ambient)"
+    humidity: "0-95% non-condensing"
+    altitude_max: "3000m above sea level"
+    dust_rating: "IP54 protection"
+
+operational_characteristics:
+  startup_sequence:
+    - "Hydraulic system pressurization"
+    - "Accumulator charging to precharge pressure"
+    - "Pilot valve initialization"
+    - "First impact within 2-3 cycles"
+  
+  steady_state_operation:
+    - "Consistent 25 Hz cycling"
+    - "Stable impact energy delivery"
+    - "Automatic pressure regulation"
+    - "Continuous duty capability"
+  
+  shutdown_sequence:
+    - "Hydraulic pressure relief"
+    - "Piston return to neutral position"
+    - "System depressurization"
+
+maintenance_requirements:
+  hydraulic_fluid: "Change every 2000 hours"
+  seals: "Inspect every 1000 hours, replace as needed"
+  accumulator: "Recharge nitrogen annually"
+  impact_surface: "Inspect for wear every 500 hours"
+  tool_retention: "Lubricate weekly during operation"
+
+notes:
+  design_optimization: "System optimized for continuous duty in construction applications"
+  scaling_capability: "Design principles scale from 200J to 5000J impact energy"
+  reliability_focus: "Robust design with minimal maintenance requirements"
+  environmental_sealing: "All hydraulic components sealed against contamination"
+
+

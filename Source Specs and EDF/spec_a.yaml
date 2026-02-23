@@ -1,0 +1,259 @@
+# Source Specification A: Pistol Shrimp (Alpheus heterochaelis)
+# SEDF-structured specification for Level 3 synthesis engine
+
+metadata:
+  system_name: "Pistol Shrimp"
+  species: "Alpheus heterochaelis"
+  classification: "Biological system"
+  function: "Predation via cavitation bubble collapse"
+  description: "Snapping shrimp that generates cavitation through rapid claw closure"
+
+L0_governing_concept:
+  description: "High-velocity water jet generation through rapid geometric closure creating cavitation-based stunning mechanism"
+  primary_function: "Prey stunning via bubble collapse shockwave"
+  energy_source: "Metabolic energy stored in elastic tendon"
+  operating_principle: "Latch-mediated power amplification with instantaneous release"
+  environment: "Ambient seawater"
+
+L1_functional_architecture:
+  energy_flow_sequence:
+    - step: "Metabolic charging"
+      description: "Muscle contraction loads elastic tendon"
+      energy_form: "Chemical to elastic potential"
+    - step: "Latch engagement"
+      description: "Geometric constraint holds loaded state"
+      energy_form: "Elastic potential held"
+    - step: "Trigger activation"
+      description: "Neural signal releases latch"
+      energy_form: "Control signal"
+    - step: "Power release"
+      description: "Tendon snaps claw shut rapidly"
+      energy_form: "Elastic to kinetic"
+    - step: "Water acceleration"
+      description: "Closing claw accelerates water through socket"
+      energy_form: "Kinetic to fluid kinetic"
+    - step: "Cavitation inception"
+      description: "High-velocity jet creates low-pressure region"
+      energy_form: "Fluid kinetic to bubble formation"
+    - step: "Bubble collapse"
+      description: "Cavitation bubbles implode creating shockwave"
+      energy_form: "Bubble potential to acoustic"
+  rate_limiter: "Metabolic recharge time for tendon loading"
+  cycle_time_range: "0.3 - 2.0 seconds"
+
+L2_domain_primitives:
+  A_energy_source:
+    code: "A1 + A3"
+    description: "Metabolic energy (A1) charges elastic storage (A3)"
+    justification: "Muscle metabolism loads elastic tendon over charging period"
+  B_energy_release:
+    code: "B2"
+    description: "Instantaneous latch release"
+    justification: "Geometric latch holds energy then releases in <1ms for power amplification"
+  C_kinematic_constraint:
+    code: "C2 + C4"
+    description: "Revolute joint (C2) with linkage mechanics (C4)"
+    justification: "Claw rotates about hinge with four-bar linkage geometry"
+  D_force_delivery:
+    code: "D2"
+    description: "Fluid acceleration"
+    justification: "Energy delivered to target via high-velocity water jet and cavitation"
+  E_sealing_containment:
+    code: "E3"
+    description: "Ambient/Open environment"
+    justification: "System operates in open seawater with no sealed chambers"
+  F_control_interface:
+    code: "F3"
+    description: "Neural control"
+    justification: "Nervous system triggers latch release on demand"
+
+L3_mechanisms:
+  torque_reversal_latch:
+    implements: "B2"
+    description: "Geometric latch using claw overlap to constrain motion"
+    function: "Hold loaded tendon against elastic force until triggered"
+    trigger_mechanism: "Muscle relaxation allows claw geometry to shift"
+    holding_force: "~50 N estimated from tendon loading"
+    release_time: "<1 ms"
+  
+  elastic_tendon_storage:
+    implements: "A3"
+    description: "Collagen-based elastic element spanning claw hinge"
+    function: "Store energy from slow muscle contraction for rapid release"
+    material: "Collagen fibers"
+    loading_time: "300-2000 ms"
+    energy_density: "~1 MJ/m³"
+  
+  four_bar_linkage:
+    implements: "C2 + C4"
+    description: "Claw closure amplifies tendon displacement"
+    function: "Convert small tendon motion to large claw angular displacement"
+    mechanical_advantage: "~4:1 angular ratio"
+    joint_type: "Biological hinge with cartilage"
+  
+  plunger_socket_nozzle:
+    implements: "D2"
+    description: "Closing claw creates plunger-in-cylinder water acceleration"
+    function: "Convert claw motion to high-velocity water jet"
+    geometry: "Plunger fits into socket with 20-50 μm radial clearance"
+    acceleration_mechanism: "Volume reduction forces water through restricted exit"
+
+L4_components:
+  claw_segments:
+    part_type: "Structural"
+    material: "Calcified chitin exoskeleton"
+    function: "Provide rigid structure for force transmission"
+    components: ["plunger finger", "socket finger", "hinge region"]
+  
+  elastic_tendon:
+    part_type: "Energy storage"
+    material: "Collagen fibers"
+    dimensions: "Length: ~8mm, Cross-section: ~0.5mm²"
+    function: "Store and release elastic energy"
+    attachment_points: ["claw base", "internal apodeme"]
+  
+  muscle_actuator:
+    part_type: "Prime mover"
+    material: "Striated muscle tissue"
+    function: "Provide metabolic energy for tendon charging"
+    force_capacity: "~50 N slow contraction"
+  
+  hinge_joint:
+    part_type: "Kinematic"
+    material: "Cartilage and chitin"
+    function: "Allow controlled rotation of claw segments"
+    degrees_of_freedom: 1
+  
+  neural_trigger:
+    part_type: "Control"
+    material: "Nerve tissue"
+    function: "Initiate latch release on command"
+    response_time: "<10 ms"
+
+L5_parameters:
+  geometric_parameters:
+    claw_length: {value: 15, unit: "mm", source: "Patek & Caldwell 2005"}
+    plunger_diameter: {value: 3, unit: "mm", source: "Versluis 2000"}
+    socket_depth: {value: 4, unit: "mm", source: "Versluis 2000"}
+    gap_clearance: {value: 25, unit: "μm", source: "Versluis 2000"}
+    hinge_radius: {value: 1.5, unit: "mm", source: "Estimated from anatomy"}
+  
+  kinematic_parameters:
+    closure_angle: {value: 90, unit: "degrees", source: "Video analysis"}
+    angular_velocity_peak: {value: 1800, unit: "rad/s", source: "Patek & Caldwell 2005"}
+    closure_duration: {value: 0.5, unit: "ms", source: "Versluis 2000"}
+    mechanical_advantage: {value: 4, unit: "dimensionless", source: "Linkage geometry"}
+  
+  force_parameters:
+    tendon_force_peak: {value: 50, unit: "N", source: "Estimated from energy"}
+    muscle_force_max: {value: 50, unit: "N", source: "Muscle cross-section"}
+    latch_holding_force: {value: 50, unit: "N", source: "Must equal tendon force"}
+  
+  energy_parameters:
+    stored_energy: {value: 40, unit: "mJ", source: "Calculated from kinematics"}
+    kinetic_energy_peak: {value: 40, unit: "mJ", source: "0.5 * I * ω²"}
+    acoustic_energy: {value: 1, unit: "mJ", source: "Hydrophone measurement"}
+    efficiency_acoustic: {value: 2.5, unit: "percent", source: "1mJ / 40mJ"}
+  
+  fluid_parameters:
+    jet_velocity_peak: {value: 30, unit: "m/s", source: "PIV measurement Versluis 2000"}
+    jet_velocity_average: {value: 25, unit: "m/s", source: "Sustained during closure"}
+    water_volume_displaced: {value: 0.1, unit: "mL", source: "Socket volume"}
+    cavitation_number: {value: 0.1, unit: "dimensionless", source: "Calculated"}
+  
+  temporal_parameters:
+    loading_time_min: {value: 300, unit: "ms", source: "Observed behavior"}
+    loading_time_max: {value: 2000, unit: "ms", source: "Observed behavior"}
+    release_time: {value: 0.8, unit: "ms", source: "Latch release duration"}
+    bubble_collapse_time: {value: 0.1, unit: "ms", source: "Rayleigh collapse"}
+    cycle_frequency_max: {value: 3, unit: "Hz", source: "1 / loading_time_min"}
+  
+  material_parameters:
+    tendon_modulus: {value: 1000, unit: "MPa", source: "Typical collagen"}
+    tendon_strain_max: {value: 0.1, unit: "dimensionless", source: "Elastic limit"}
+    shell_hardness: {value: 3, unit: "Mohs", source: "Calcified chitin"}
+    water_density: {value: 1025, unit: "kg/m³", source: "Seawater"}
+    water_viscosity: {value: 0.001, unit: "Pa·s", source: "Seawater at 20°C"}
+
+domain_implementations:
+  A1_metabolic:
+    mechanism: "Muscle contraction"
+    power_source: "ATP hydrolysis"
+    characteristics: "Slow, sustained force generation"
+  
+  A3_elastic:
+    mechanism: "Tendon elastic deformation"
+    energy_storage: "Strain energy in collagen matrix"
+    characteristics: "High energy density, rapid release capability"
+  
+  B2_instantaneous_latch:
+    mechanism: "Geometric constraint with trigger"
+    holding_principle: "Claw overlap prevents motion"
+    release_principle: "Muscle relaxation shifts geometry"
+    characteristics: "Binary on/off, sub-millisecond release"
+  
+  C2_revolute:
+    mechanism: "Biological hinge joint"
+    constraint: "Single axis rotation only"
+    characteristics: "Low friction, constrained motion"
+  
+  C4_linkage:
+    mechanism: "Four-bar linkage geometry"
+    function: "Motion and force transformation"
+    characteristics: "Mechanical advantage, coordinated motion"
+  
+  D2_fluid_acceleration:
+    mechanism: "Plunger-in-socket water displacement"
+    principle: "Volume reduction creates pressure gradient"
+    characteristics: "High velocity, cavitation-inducing flow"
+  
+  E3_ambient:
+    mechanism: "Direct environmental interface"
+    characteristics: "No sealing required, infinite water supply"
+  
+  F3_neural:
+    mechanism: "Nervous system command"
+    signal_type: "Action potential"
+    characteristics: "Rapid response, voluntary control"
+
+functional_relationships:
+  energy_cascade:
+    - "Metabolic (A1) charges Elastic (A3)"
+    - "Latch (B2) holds Elastic energy until triggered"
+    - "Release converts Elastic to Kinematic (C2+C4)"
+    - "Kinematics drives Fluid acceleration (D2)"
+  
+  timing_dependencies:
+    - "Loading time determines maximum cycle frequency"
+    - "Release time must be << closure time for power amplification"
+    - "Jet duration determines cavitation bubble formation time"
+  
+  geometric_constraints:
+    - "Gap clearance affects jet velocity and cavitation inception"
+    - "Mechanical advantage trades force for velocity"
+    - "Socket depth limits maximum displacement volume"
+
+performance_envelope:
+  maximum_performance:
+    energy_stored: "40 mJ"
+    peak_velocity: "30 m/s"
+    peak_acceleration: "5×10⁶ m/s²"
+    cycle_frequency: "3 Hz"
+  
+  typical_operation:
+    energy_stored: "20-35 mJ"
+    jet_velocity: "25-30 m/s"
+    cycle_frequency: "0.5-2 Hz"
+  
+  environmental_limits:
+    temperature_range: "5-30°C (marine environment)"
+    depth_limit: "0-200m (pressure affects cavitation)"
+    medium: "Seawater only"
+
+notes:
+  cavitation_physics: "Jet velocity >25 m/s required for cavitation inception in seawater at 1 atm"
+  power_amplification: "Latch mechanism enables 10-100x power amplification over muscle alone"
+  evolutionary_optimization: "System optimized for stunning prey, not continuous operation"
+  scaling_limitations: "Biological constraints limit maximum size and force"
+
+

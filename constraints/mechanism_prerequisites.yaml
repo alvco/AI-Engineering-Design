@@ -1,0 +1,144 @@
+# constraints/mechanism_prerequisites.yaml
+
+mechanism_prerequisites:
+
+  cavitation:
+    description: "Fluid acceleration causing vapor bubble formation and asymmetric collapse"
+    domain: D2
+    prerequisites:
+      - parameter: jet_velocity
+        operator: ">="
+        threshold: 25
+        unit: "m/s"
+        source: "Spec A L5 - Versluis 2000"
+        rationale: "Minimum velocity for cavitation inception in water at ambient pressure"
+      - parameter: medium
+        requirement: "liquid_present"
+        source: "Physics of cavitation"
+        rationale: "Cavitation requires a liquid medium to form vapor bubbles"
+
+  percussion:
+    description: "Solid-to-solid momentum transfer via direct impact"
+    domain: D1
+    prerequisites:
+      - parameter: impact_energy
+        operator: ">="
+        threshold: 100
+        unit: "J"
+        source: "Spec B L5 - typical rock fracture threshold"
+        rationale: "Minimum energy for crack initiation in medium-hardness rock"
+      - parameter: contact_interface
+        requirement: "solid_to_solid"
+        source: "Stress wave physics"
+        rationale: "Percussion requires direct contact between striker and target"
+
+  latch_release:
+    description: "Stored energy held by geometric constraint, released instantaneously upon trigger"
+    domain: B2
+    prerequisites:
+      - parameter: holding_force
+        operator: ">"
+        threshold_reference: "release_force"
+        source: "Spec A L3"
+        rationale: "Latch must hold against stored energy until triggered"
+      - parameter: release_time
+        operator: "<="
+        threshold: 2
+        unit: "ms"
+        source: "Spec A L5"
+        rationale: "Instantaneous release required for power amplification"
+
+  continuous_cycle:
+    description: "Self-oscillating hydraulic circuit with continuous energy flow"
+    domain: B1
+    prerequisites:
+      - parameter: valve_switching_time
+        operator: "<"
+        threshold_reference: "cycle_time * 0.1"
+        source: "Spec B L3"
+        rationale: "Valve must switch fast enough to not limit cycle frequency"
+      - parameter: flow_rate
+        operator: ">="
+        threshold_reference: "displaced_volume * cycle_frequency"
+        source: "Hydraulic continuity"
+        rationale: "Flow must sustain required cycle rate"
+
+  elastic_storage:
+    description: "Energy stored in elastic deformation of solid or gas compression"
+    domain: A3
+    prerequisites:
+      - parameter: stored_energy
+        operator: ">="
+        threshold_reference: "required_cycle_energy"
+        source: "Energy conservation"
+        rationale: "Storage must hold sufficient energy for power stroke"
+      - parameter: cycle_life
+        operator: ">="
+        threshold: 10000
+        unit: "cycles"
+        source: "Industrial durability requirement"
+        rationale: "Elastic element must survive repeated loading"
+
+  hydraulic_drive:
+    description: "Pressurized fluid system providing force and motion"
+    domain: A2
+    prerequisites:
+      - parameter: system_pressure
+        operator: ">="
+        threshold_reference: "load_pressure + losses"
+        source: "Spec B L5"
+        rationale: "System pressure must overcome load plus losses"
+      - parameter: flow_capacity
+        operator: ">="
+        threshold_reference: "actuator_flow * safety_factor"
+        source: "Hydraulic sizing"
+        rationale: "Pump must provide adequate flow with safety margin"
+
+  linear_motion:
+    description: "Single degree of freedom translation along straight path"
+    domain: C1
+    prerequisites:
+      - parameter: guide_stiffness
+        operator: ">="
+        threshold_reference: "lateral_load / deflection_limit"
+        source: "Structural mechanics"
+        rationale: "Guide must be stiff enough to maintain straight motion"
+      - parameter: friction_coefficient
+        operator: "<="
+        threshold: 0.2
+        unit: "dimensionless"
+        source: "Typical linear bearing performance"
+        rationale: "Low friction required for efficient motion"
+
+  revolute_motion:
+    description: "Single degree of freedom rotation about fixed axis"
+    domain: C2
+    prerequisites:
+      - parameter: bearing_capacity
+        operator: ">="
+        threshold_reference: "applied_load * safety_factor"
+        source: "Bearing manufacturer specs"
+        rationale: "Bearing must handle applied loads with safety margin"
+      - parameter: angular_precision
+        operator: "<="
+        threshold_reference: "required_positioning_accuracy"
+        source: "Application requirements"
+        rationale: "Joint must meet positioning requirements"
+
+validation_instructions:
+  mechanism_identification: "Extract claimed mechanisms from L3 specification and domain primitives"
+  prerequisite_checking: "For each mechanism, verify all prerequisites against design parameters"
+  threshold_types:
+    fixed_value: "Compare parameter directly to threshold number"
+    reference_value: "Compare parameter to another parameter in the design"
+    requirement: "Check that specified condition is met"
+  failure_reporting: "Report specific prerequisite that failed with threshold and actual value"
+
+metadata:
+  version: "1.0"
+  total_mechanisms: 8
+  mechanisms_with_fixed_thresholds: 6
+  mechanisms_with_reference_thresholds: 4
+  description: "Physical prerequisites that claimed mechanisms must meet to function"
+
+

@@ -1,0 +1,143 @@
+physics_constraints:
+
+  P1_energy_conservation:
+    id: P1
+    name: "Energy Conservation"
+    type: kill
+    applies_to: [L5]
+    owner: physics_validator
+    requires_calculation: true
+    formula: "E_available >= 0.5 * m * v^2"
+    description: "Available energy must meet or exceed required kinetic energy for moving components"
+    rationale: "Prevents designs that violate conservation of energy by claiming insufficient stored energy for specified velocities"
+
+  P2_temporal_feasibility:
+    id: P2
+    name: "Temporal Feasibility"
+    type: kill
+    applies_to: [L5]
+    owner: physics_validator
+    requires_calculation: true
+    formula: "T_cycle >= T_charge + T_fire + T_reset + T_other"
+    description: "Total cycle time must accommodate all phases of operation"
+    rationale: "Ensures that claimed cycle frequencies are physically achievable given the time requirements of each phase"
+
+  P3_mechanism_prerequisites:
+    id: P3
+    name: "Mechanism Prerequisites Met"
+    type: kill
+    applies_to: [L5]
+    owner: physics_validator
+    requires_calculation: true
+    formula: "varies by mechanism"
+    description: "Every claimed mechanism must meet its physical prerequisites for operation"
+    rationale: "Ensures that mechanisms can actually function as claimed, not just be named"
+    reference_file: "mechanism_prerequisites.yaml"
+
+  P4_dimensional_consistency:
+    id: P4
+    name: "Dimensional Consistency"
+    type: kill
+    applies_to: [L5]
+    owner: physics_validator
+    requires_calculation: false
+    description: "All calculations must use consistent units throughout"
+    rationale: "Prevents unit conversion errors that could mask physics violations"
+
+  P5_power_adequacy:
+    id: P5
+    name: "Power Adequacy"
+    type: kill
+    applies_to: [L5]
+    owner: physics_validator
+    requires_calculation: true
+    formula: "P_source >= E_cycle * f_cycle"
+    description: "Power source must deliver required energy at required frequency for sustained operation"
+    rationale: "Ensures that the system can actually sustain its claimed operating frequency over time"
+
+  P6_no_magic_physics:
+    id: P6
+    name: "No Magic Physics"
+    type: kill
+    applies_to: [L0, L1, L2, L3, L4, L5]
+    owner: physics_validator
+    requires_calculation: false
+    description: "All phenomena must obey known physics laws"
+    rationale: "Catch-all constraint preventing perpetual motion, energy from nothing, or other impossible physics"
+
+  P7_energy_continuity:
+    id: P7
+    name: "Energy Continuity"
+    type: kill
+    applies_to: [L1]
+    owner: physics_validator
+    requires_calculation: false
+    description: "Every step's energy output must connect to the next step's energy input"
+    rationale: "Ensures the functional architecture forms a complete energy flow chain with no gaps"
+
+  P8_cycle_closure:
+    id: P8
+    name: "Cycle Closure"
+    type: kill
+    applies_to: [L1]
+    owner: physics_validator
+    requires_calculation: false
+    description: "The energy flow sequence must return to its initial state for repeated cycling"
+    rationale: "Ensures the system can actually cycle repeatedly, not just execute once"
+
+  P9_rate_limiter_identified:
+    id: P9
+    name: "Rate Limiter Identified"
+    type: flag
+    applies_to: [L1]
+    owner: physics_validator
+    requires_calculation: false
+    description: "The slowest phase (bottleneck limiting cycle frequency) should be explicitly identified"
+    rationale: "Encourages early identification of frequency-limiting factors"
+
+  P10_kinematic_continuity:
+    id: P10
+    name: "Kinematic Continuity"
+    type: kill
+    applies_to: [L3]
+    owner: physics_validator
+    requires_calculation: false
+    description: "Force and motion paths must be explicit and physically connected"
+    rationale: "Prevents 'teleportation' of forces; every mechanism must show how force transmits from input to output"
+
+  P11_material_reality:
+    id: P11
+    name: "Material Reality"
+    type: kill
+    applies_to: [L4]
+    owner: physics_validator
+    requires_calculation: false
+    description: "All specified materials must be real industrial materials that exist"
+    rationale: "Prevents invention of fictional materials with convenient properties"
+
+  P12_efficiency_plausibility:
+    id: P12
+    name: "Efficiency Plausibility"
+    type: flag
+    applies_to: [L5]
+    owner: physics_validator
+    requires_calculation: false
+    threshold: "eta > 95%"
+    description: "Efficiency claims exceeding 95% are flagged as potentially unrealistic"
+    rationale: "Real systems have losses; extremely high efficiency claims warrant human review"
+
+constraint_activation:
+  L0: [P6]
+  L1: [P6, P7, P8, P9]
+  L2: [P6]
+  L3: [P6, P10]
+  L4: [P6, P11]
+  L5: [P1, P2, P3, P4, P5, P6, P12]
+
+metadata:
+  version: "1.0"
+  total_constraints: 12
+  kill_constraints: 10
+  flag_constraints: 2
+  calculation_required: [P1, P2, P3, P5]
+  description: "Physics constraints enforce physical possibility and mathematical consistency without prescribing solutions"

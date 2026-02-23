@@ -1,0 +1,141 @@
+sedf_valid_codes:
+
+  A_energy_source:
+    domain_name: "Energy Source"
+    codes:
+      - code: A1
+        name: "Metabolic"
+        source: "Shrimp"
+        combinable: true
+        combinable_with: [A2, A3]
+        combination_rationale: "Can be supplemented by other energy sources"
+        
+      - code: A2
+        name: "Hydraulic"
+        source: "Breaker"
+        combinable: true
+        combinable_with: [A1, A3]
+        combination_rationale: "Can charge elastic storage or supplement metabolic input"
+        
+      - code: A3
+        name: "Elastic/Pneumatic"
+        source: "Both"
+        combinable: true
+        combinable_with: [A1, A2]
+        combination_rationale: "Can be charged by hydraulic or metabolic sources"
+
+  B_energy_release:
+    domain_name: "Energy Release"
+    codes:
+      - code: B1
+        name: "Continuous Cycle"
+        source: "Breaker"
+        combinable: false
+        exclusive_with: [B2]
+        exclusion_rationale: "System cannot simultaneously cycle continuously and wait for discrete latch release"
+        
+      - code: B2
+        name: "Instantaneous Latch"
+        source: "Shrimp"
+        combinable: false
+        exclusive_with: [B1]
+        exclusion_rationale: "System cannot simultaneously cycle continuously and wait for discrete latch release"
+
+  C_kinematic_constraint:
+    domain_name: "Kinematic Constraint"
+    codes:
+      - code: C1
+        name: "Linear Guide"
+        source: "Breaker"
+        combinable: true
+        combinable_with: [C2, C4]
+        combination_rationale: "Single DOF translation can be combined with rotation or linkages"
+        
+      - code: C2
+        name: "Revolute Joint"
+        source: "Shrimp"
+        combinable: true
+        combinable_with: [C1, C4]
+        combination_rationale: "Single DOF rotation can be combined with translation or linkages"
+        
+      - code: C4
+        name: "Linkage/Slip"
+        source: "Shrimp"
+        combinable: true
+        combinable_with: [C1, C2]
+        combination_rationale: "Multi-bar mechanism can incorporate translation and rotation"
+
+  D_force_delivery:
+    domain_name: "Force Delivery"
+    codes:
+      - code: D1
+        name: "Percussion"
+        source: "Breaker"
+        combinable: true
+        combinable_with: [D2]
+        combination_rationale: "Solid-to-solid impact can be sequenced with fluid acceleration"
+        
+      - code: D2
+        name: "Fluid Acceleration"
+        source: "Shrimp"
+        combinable: true
+        combinable_with: [D1]
+        combination_rationale: "Pressure-to-velocity conversion can be sequenced with percussion"
+
+  E_sealing_containment:
+    domain_name: "Sealing/Containment"
+    codes:
+      - code: E2
+        name: "Dynamic Seal"
+        source: "Breaker"
+        combinable: true
+        combinable_with: [E3]
+        combination_rationale: "Sealed hydraulic circuits can coexist with open water delivery zones"
+        
+      - code: E3
+        name: "Ambient/Open"
+        source: "Shrimp"
+        combinable: true
+        combinable_with: [E2]
+        combination_rationale: "Open environment can coexist with sealed subsystems"
+
+  F_control_interface:
+    domain_name: "Control Interface"
+    codes:
+      - code: F1
+        name: "Mechanical Pilot"
+        source: "Breaker"
+        combinable: true
+        combinable_with: [F2]
+        combination_rationale: "Pressure-driven feedback can be augmented with electronic control"
+        
+      - code: F2
+        name: "Electronic/Discrete"
+        source: "Synth"
+        combinable: true
+        combinable_with: [F1]
+        combination_rationale: "Solenoid/relay control can work with mechanical feedback"
+        
+      - code: F3
+        name: "Neural"
+        source: "Shrimp"
+        combinable: false
+        exclusion_rationale: "Not applicable for industrial system"
+
+validation_rules:
+  invalid_code_action: "FAIL"
+  exclusive_combination_action: "FAIL"
+  unjustified_combination_action: "FLAG"
+  required_justification_fields: ["combination_rationale"]
+
+domain_requirements:
+  required_domains: ["A", "B", "C", "D", "E", "F"]
+  all_domains_required: true
+  
+metadata:
+  version: "1.0"
+  total_domains: 6
+  total_codes: 13
+  exclusive_pairs: 1
+  combinable_codes: 11
+  description: "Valid SEDF primitive codes with exclusivity and combination rules"
