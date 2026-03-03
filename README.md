@@ -70,7 +70,7 @@ Model and parameter settings are defined in `engine/config.yaml`.
 
 If referencing this work, please cite the accompanying paper:
 
-> Impossible Biomimetic Synthesis: AI Reasoning in Engineering Design (2025)
+> Impossible Biomimetic Synthesis: AI Reasoning in Engineering Design (2026)
 
 ## License
 
